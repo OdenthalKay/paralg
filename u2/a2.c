@@ -14,10 +14,11 @@ atype_t sum(atype_t x, atype_t y);
 
 int main(int argc, char *argv[])
 {
-	if(argc != 2) {
+	if(argc != 3) {
 		printf("Wrong number of arguments. Expecting: './program <n> <p>'\n");
 		return 1;
 	}
+
 	int n = atoi(argv[1]);
 	int p = atoi(argv[2]);
 	int n1 = 2*n-1; // leafs + inner elements + root
