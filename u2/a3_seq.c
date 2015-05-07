@@ -10,8 +10,8 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	int n = atoi(argv[1]);
-	double x[n];
-	double y[n];
+	atype_t x[n];
+	atype_t y[n];
 
 	fill_array(x,n);
 	print_array(0,x,n);

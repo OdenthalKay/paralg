@@ -8,7 +8,7 @@ typedef double atype_t;
 /*
 Used in a3
 */
-void sequential_prefix(double x[], int start, int blocksize, double y[]) {
+void sequential_prefix(atype_t x[], int start, int blocksize, atype_t y[]) {
 	int i;
 	y[0] = x[start];
 	for (i=0;i<blocksize-1;i++) {
@@ -18,7 +18,7 @@ void sequential_prefix(double x[], int start, int blocksize, double y[]) {
 
 //////////////////////////////////////////////////////////////////////////
 
-void fill_array(double x[], int size) {
+void fill_array(atype_t x[], int size) {
 	int i;
 	for (i=0;i<size;i++) {
 		x[i] = i;
