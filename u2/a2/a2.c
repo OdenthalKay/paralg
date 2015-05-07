@@ -10,10 +10,9 @@ void print_array(int threadID, double x[], int size);
 /*
 Reduction with intermediate results
 */
-atype_t balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y)) {
+void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y)) {
 	int leafs = n1/2+1;
 	int stride, i; 
-	omp_set_num_threads(3);
 	for (stride=(leafs/2); stride>0; stride/=2) {
 		#pragma omp parallel for
 		for (i=0; i<stride; i++) {
@@ -28,7 +27,7 @@ int main()
 	int n = 8;
 	int n1 = 2*n-1; // leafs + inner elements + root
 	atype_t values[n1];
-	int i, j, stride;
+	int i;
 
 	// fill array with values 1...n
 	int x = 1;

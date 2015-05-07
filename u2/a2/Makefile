@@ -1,11 +1,18 @@
 CC      = gcc
-LDFLAGS  = -fopenmp -lm 
+CFLAGS  = -Wall
+LDFLAGS = -lm
+OMPFLAG = -fopenmp 
 RM      = rm -f
 
-default: a2
+default: all
 
-a2: a2.o
-	$(CC) -o a2 $(LDFLAGS) a2.c
+all: a2_seq a2_par
+
+a2_seq: a2.c
+	$(CC) $(CFLAGS) a2.c -o a2_seq $(LDFLAGS) 
+
+a2_par: a2.c
+	$(CC) $(CFLAGS) a2.c -o a2_par $(LDFLAGS) $(OMPFLAG)
 
 clean veryclean:
-	$(RM) a2
+	$(RM) a2_seq.o a2_par.o a2_seq a2_par
