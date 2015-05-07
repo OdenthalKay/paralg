@@ -3,24 +3,15 @@
 #include <math.h>
 #include <omp.h>
 
+/*
+This file is used for both the sequential and parallel version.
+The sequential version doesn't use openmp pragmas.
+*/
+
 typedef double atype_t;
 static atype_t sum(atype_t x, atype_t y);
 void print_array(int threadID, double x[], int size);
-
-/*
-Reduction with intermediate results
-*/
-void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y)) {
-	int leafs = n1/2+1;
-	int stride, i; 
-	for (stride=(leafs/2); stride>0; stride/=2) {
-		#pragma omp parallel for
-		for (i=0; i<stride; i++) {
-			printf("%d\n",i);
-			values[stride+i-1] = f(values[2*stride+i-1], values[3*stride+i-1]);
-		}
-	}
-}
+void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y));
 
 int main()
 {
@@ -45,6 +36,22 @@ int main()
 /////////////////////////////////////////////////////////////
 atype_t sum(atype_t x, atype_t y) {
 	return x+y;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+/*
+Reduction with intermediate results
+*/
+void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y)) {
+	int leafs = n1/2+1;
+	int stride, i; 
+	for (stride=(leafs/2); stride>0; stride/=2) {
+		#pragma omp parallel for
+		for (i=0; i<stride; i++) {
+			values[stride+i-1] = f(values[2*stride+i-1], values[3*stride+i-1]);
+		}
+	}
 }
 
 void print_array(int threadID, double x[], int size) {
