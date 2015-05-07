@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-	if(argc != 3) {
+	if(argc != 2) {
 		printf("Wrong number of arguments. Expecting: './program <n>'\n");
 		return 1;
 	}
