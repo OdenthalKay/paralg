@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <omp.h>
-#include "a3_helper.c"
+#include "helper.c"
 
 int main(int argc, char *argv[])
 {

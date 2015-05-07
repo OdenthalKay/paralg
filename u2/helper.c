@@ -1,4 +1,13 @@
 
+/*
+application data type for both a2 and a3
+*/
+typedef double atype_t;
+
+
+/*
+Used in a3
+*/
 void sequential_prefix(double x[], int start, int blocksize, double y[]) {
 	int i;
 	y[0] = x[start];
@@ -6,6 +15,8 @@ void sequential_prefix(double x[], int start, int blocksize, double y[]) {
 		y[i+1] = y[i] + x[i+start+1];
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////
 
 void fill_array(double x[], int size) {
 	int i;
