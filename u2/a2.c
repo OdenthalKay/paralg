@@ -1,21 +1,25 @@
 
 #include <stdio.h>
-#include <math.h>
+#include <stdlib.h>
 #include <omp.h>
+#include "helper.c"
 
 /*
 This file is used for both the sequential and parallel version.
 The sequential version doesn't use openmp pragmas.
 */
 
-typedef double atype_t;
-static atype_t sum(atype_t x, atype_t y);
-void print_array(int threadID, double x[], int size);
 void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y));
+atype_t sum(atype_t x, atype_t y);
 
-int main()
+int main(int argc, char *argv[])
 {
-	int n = 8;
+	if(argc != 2) {
+		printf("Wrong number of arguments. Expecting: './program <n> <p>'\n");
+		return 1;
+	}
+	int n = atoi(argv[1]);
+	int p = atoi(argv[2]);
 	int n1 = 2*n-1; // leafs + inner elements + root
 	atype_t values[n1];
 	int i;
@@ -34,11 +38,6 @@ int main()
 }
 
 /////////////////////////////////////////////////////////////
-atype_t sum(atype_t x, atype_t y) {
-	return x+y;
-}
-
-////////////////////////////////////////////////////////////////////////////////////
 
 /*
 Reduction with intermediate results
@@ -54,10 +53,6 @@ void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y
 	}
 }
 
-void print_array(int threadID, double x[], int size) {
-	printf("--- Array of thread with ID %d ---\n", threadID);
-	int i;
-	for (i=0;i<size;i++) {
-		printf("%d: %.2f\n",i,x[i]);
-	}
-};
+atype_t sum(atype_t x, atype_t y) {
+	return x+y;
+}
