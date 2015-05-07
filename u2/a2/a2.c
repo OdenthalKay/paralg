@@ -1,9 +1,10 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
 
 typedef double atype_t;
-atype_t sum(atype_t x, atype_t y);
+static atype_t sum(atype_t x, atype_t y);
 void print_array(int threadID, double x[], int size);
 
 /*
@@ -12,10 +13,12 @@ Reduction with intermediate results
 atype_t balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y)) {
 	int leafs = n1/2+1;
 	int stride, i; 
-
+	omp_set_num_threads(3);
 	for (stride=(leafs/2); stride>0; stride/=2) {
+		#pragma omp parallel for
 		for (i=0; i<stride; i++) {
-			values[stride+i-1] = sum(values[2*stride+i-1], values[3*stride+i-1]);
+			printf("%d\n",i);
+			values[stride+i-1] = f(values[2*stride+i-1], values[3*stride+i-1]);
 		}
 	}
 }
