@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
 	}
 
 	int n = atoi(argv[1]);
-	atype_t values[n];
+	//atype_t values[n];
+	atype_t *values = (double) malloc(n*sizeof(double));
 	atype_t result = 0.0;
 	int i;
 

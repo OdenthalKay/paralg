@@ -1,23 +1,12 @@
-CC      = gcc
-CFLAGS  = -Wall
-OMPFLAG = -fopenmp 
-RM      = rm -f
-
+CC = gcc -fopenmp
+LDLIBS = -L/usr/local/lib -lFHBRS
+CFLAGS = -O
+RM = rm -f
 default: all
-
-all: a2_seq a2_par a3_seq a3_par
-
-a2_seq: a2_seq.c
-	$(CC) $(CFLAGS) a2_seq.c -o a2_seq $(LDFLAGS) 
-
-a2_par: a2_par.c
-	$(CC) $(CFLAGS) a2_par.c -o a2_par $(LDFLAGS) $(OMPFLAG)
-
-a3_seq: a3_seq.c
-	$(CC) $(CFLAGS) a3_seq.c -o a3_seq $(LDFLAGS)
-
-a3_par: a3_par.c
-	$(CC) $(CFLAGS) a3_par.c -o a3_par $(LDFLAGS) $(OMPFLAG)
-
+all: a2_par.exe
+a2.o: a2_par.c
+	$(CC) $(CFLAGS) -c $<
+a2_par.exe: a2_par.o
+	$(CC) -o $@ $< $(LDLIBS)
 clean veryclean:
 	$(RM) a2_seq a2_par a3_seq a3_par
