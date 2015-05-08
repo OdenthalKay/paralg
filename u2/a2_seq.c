@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
 		result = sum(result, values[i]);
 	}
 	t1 = gettime();
-	printf("(n: %d) Calculation took %.6f seconds.\n",n,t1-t0);
-	printf("SUM: %.2f\n",result);
+	printf("SUMME: %f\n",result);
+	printf("n: %d\nseconds: %.6f\n",n,t1-t0);
 	return 0;
 }
 

@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
 	double t0, t1;
 
 	fill_array(x,n);
-	t0 = gettime();
 	#pragma omp parallel
 	{
 		#pragma omp single
@@ -30,12 +29,17 @@ int main(int argc, char *argv[])
 			adjust =  malloc(p*sizeof(atype_t));
 
 		}
+		#pragma omp barrier
+
 		int blocksize = n/p;
 		int myproc = omp_get_thread_num();
 		int start = myproc * blocksize;
-		double results[blocksize];
+		atype_t *results = malloc(blocksize*sizeof(atype_t));
 		int i;
 
+		#pragma omp single
+		t0 = gettime();
+		
 		// insert calculated values
 		sequential_prefix(x,start,blocksize,results);	
 		for (i=0;i<blocksize;i++) {
@@ -64,38 +68,9 @@ int main(int argc, char *argv[])
 		}
 		#pragma omp barrier
 
-		/*
-		Calculate prefix of values that were previously not assigned to a block.
-		This happens when n mod p isn't 0.
-		*/
-		#pragma omp single
-		{
-			int rest = n % p;
-			int rest_blocksize = rest+1;
-			double tmp[rest_blocksize];  // input
-			double tmp2[rest_blocksize]; // output
-
-			/*
-			fill array with: 
-			- last calculated prefix value
-			- values of x that were not covered yet 
-			*/
-			tmp[0] = y[n-rest-1];
-			for (i=0;i<rest;i++) {
-				tmp[i+1] = x[n-rest_blocksize];
-			}
-			sequential_prefix(tmp,0,rest_blocksize,tmp2);
-
-			// write prefixes to the result array
-			for (i=0;i<rest_blocksize;i++) {
-				y[n-rest_blocksize+i] = tmp2[i];
-			}
-		}
-		//print_array(myproc,y,n);
 	}
 	t1 = gettime();
-	printf("(n: %d) Calculation took %.6f seconds.\n",n,t1-t0);
-	printf("SUM: %.2f\n",y[0]);
+	printf("p: %d\nn: %d\nseconds: %.6f\n",p,n,t1-t0);
 	return 0;
 }
 

@@ -18,7 +18,9 @@ int main(int argc, char *argv[])
 		printf("Wrong number of arguments. Expecting: './program <n>'\n");
 		return 1;
 	}
+	printf("===== a2_par.exe ===\n");
 	int n = atoi(argv[1]);
+	int p;
 	int n1 = 2*n-1; // leafs + inner elements + root
 	atype_t *values = malloc(n1*sizeof(atype_t));
 	int i;
@@ -34,7 +36,7 @@ int main(int argc, char *argv[])
 	{
 		#pragma omp single
 		{
-			printf("Running with %d threads.\n",omp_get_num_threads());
+			p = omp_get_num_threads();
 			t0 = gettime();
 		}
 		
@@ -43,8 +45,7 @@ int main(int argc, char *argv[])
 		#pragma omp single
 		{
 			t1 = gettime();
-			printf("(n: %d) Calculation took %.6f seconds.\n",n,t1-t0);
-			printf("SUM: %.2f\n",values[0]);
+			printf("p: %d\nn: %d\nseconds: %.6f\n",p,n,t1-t0);
 		}
 	}
 	return 0;

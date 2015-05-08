@@ -20,8 +20,6 @@ int main(int argc, char *argv[])
 	t0 = gettime();
 	sequential_prefix(x, 0, n, y);
 	t1 = gettime();
-	printf("(n: %d) Calculation took %.6f seconds.\n",n,t1-t0);
-	printf("SUM: %.2f\n",y[0]);
-	//print_array(0,y,n);
+	printf("n: %d\nseconds: %.6f\n",n,t1-t0);
 	return 0;
 }
