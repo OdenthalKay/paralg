@@ -3,6 +3,9 @@
 application data type for both a2 and a3
 */
 typedef double atype_t;
+atype_t sum(atype_t x, atype_t y) {
+	return x+y;
+}
 
 
 /*
@@ -21,7 +24,7 @@ void sequential_prefix(atype_t x[], int start, int blocksize, atype_t y[]) {
 void fill_array(atype_t x[], int size) {
 	int i;
 	for (i=0;i<size;i++) {
-		x[i] = i;
+		x[i] = i+1;
 	}
 }
 

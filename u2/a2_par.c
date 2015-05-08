@@ -10,22 +10,20 @@ The sequential version doesn't use openmp pragmas.
 */
 
 void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y));
-atype_t sum(atype_t x, atype_t y);
 
 int main(int argc, char *argv[])
 {
-	if(argc != 3) {
-		printf("Wrong number of arguments. Expecting: './program <n> <p>'\n");
+	if(argc != 2) {
+		printf("Wrong number of arguments. Expecting: './program <n>'\n");
 		return 1;
 	}
 
 	int n = atoi(argv[1]);
-	int p = atoi(argv[2]);
 	int n1 = 2*n-1; // leafs + inner elements + root
 	atype_t values[n1];
 	int i;
 
-	// fill array with values 1...n
+	// fill array with values 1...n 
 	int x = 1;
 	for (i=n1-n; i<n1; i++) {
 		values[i] = x;
@@ -54,6 +52,3 @@ void balanced_tree(int n1, atype_t values[n1], atype_t (*f)(atype_t x, atype_t y
 	}
 }
 
-atype_t sum(atype_t x, atype_t y) {
-	return x+y;
-}
