@@ -1,26 +1,35 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <omp.h>
+#include <libFHBRS.h>
 #include "helper.c"
 
 int main(int argc, char *argv[])
 {
-	if(argc != 3) {
-		printf("Wrong number of arguments. Expecting: './program <n> <p>'\n");
+	if(argc != 2) {
+		printf("Wrong number of arguments. Expecting: './program <n>'\n");
 		return 1;
 	}
 	int n = atoi(argv[1]);
-	int p = atoi(argv[2]);
-	double x[n];
-	double y[n];
-	double prefix1[n];
-	double prefix2[p];
-	double adjust[p]; // prefix of last block elements
+	int p;
+	atype_t *x = malloc(n*sizeof(atype_t));
+	atype_t *y = malloc(n*sizeof(atype_t));
+	atype_t *prefix1 = malloc(n*sizeof(atype_t));
+	atype_t *prefix2;
+	atype_t *adjust; // prefix of last block elements
+	double t0, t1;
 
-	omp_set_num_threads(p);
 	fill_array(x,n);
+	t0 = gettime();
 	#pragma omp parallel
 	{
+		#pragma omp single
+		{
+			p = omp_get_num_threads();
+			prefix2 = malloc(p*sizeof(atype_t));
+			adjust =  malloc(p*sizeof(atype_t));
+
+		}
 		int blocksize = n/p;
 		int myproc = omp_get_thread_num();
 		int start = myproc * blocksize;
@@ -82,9 +91,11 @@ int main(int argc, char *argv[])
 				y[n-rest_blocksize+i] = tmp2[i];
 			}
 		}
-		print_array(myproc,y,n);
+		//print_array(myproc,y,n);
 	}
-
+	t1 = gettime();
+	printf("(n: %d) Calculation took %.6f seconds.\n",n,t1-t0);
+	printf("SUM: %.2f\n",y[0]);
 	return 0;
 }
 

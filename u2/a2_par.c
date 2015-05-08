@@ -20,8 +20,7 @@ int main(int argc, char *argv[])
 	}
 	int n = atoi(argv[1]);
 	int n1 = 2*n-1; // leafs + inner elements + root
-	atype_t *values = malloc(n1*sizeof(double));
-	//atype_t values[n1];
+	atype_t *values = malloc(n1*sizeof(atype_t));
 	int i;
 	double t0, t1;
 
@@ -46,7 +45,6 @@ int main(int argc, char *argv[])
 			t1 = gettime();
 			printf("(n: %d) Calculation took %.6f seconds.\n",n,t1-t0);
 			printf("SUM: %.2f\n",values[0]);
-			//print_array(0,values,n1);
 		}
 	}
 	return 0;
