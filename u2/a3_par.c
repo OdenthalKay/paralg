@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
 		#pragma omp single 
 		sequential_prefix(adjust, 0, p, prefix2);
 
-
 		// replace first value in each block with corresponding last block prefix + first value
 		x[start] = x[start] + prefix2[myproc];
 		sequential_prefix(x,start,blocksize,results);

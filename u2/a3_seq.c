@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
 	double t0, t1;
 
 	fill_array(x,n);
-	//print_array(0,x,n);
 	t0 = gettime();
 	sequential_prefix(x, 0, n, y);
 	t1 = gettime();
