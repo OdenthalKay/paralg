@@ -1,0 +1,48 @@
+===============================================================================
+Compiling and installing:
+
+Just call "make" to compile everything.
+
+To install you need "libFHBRS.h" somewhere in the search path for include files
+and "libFHBRS.a" somewhere in the search path for library files.
+
+A good idea for that is to copy the whole directory to /usr/local/libFHBRS.
+Then make a soft link from /usr/local/include (in standard search path for include files)
+and /usr/local/lib (in standard search path for library files) to the appropriate files.
+I.e.:
+cd /usr/local/include; ln -s ../libFHBRS/ibFHBRS.h .
+cd /usr/local/lib;     ln -s ../libFHBRS/ibFHBRS.a .
+
+
+===============================================================================
+Some utility functions for C:
+
+- timing functions
+- random numbers
+- some very simple graphic functions
+
+See libFHBRS.h for a list of available functions.
+
+
+===============================================================================
+Timing:
+
+Example for usage in C:
+=======================
+#include <libFHBRS.h>
+int main(int argc, char **argv)
+{
+  double t1, t2;
+
+  t1 = gettime();
+  t1 = gettime();
+  t2 = gettime();
+  printf("overhead getting time : %.6f s\n", t2-t1);
+}
+
+(If installed at /usr/local/libFHBRS):
+cc -I/usr/local/libFHBRS test.c -L/usr/local/libFHBRS -lFHBRS -lX11 -lpthread
+./a.out
+
+
+===============================================================================
