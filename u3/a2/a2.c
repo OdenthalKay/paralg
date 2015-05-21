@@ -5,6 +5,7 @@
 #include "libFHBRS/libFHBRS.h"
 
 int cmpfunc(const void *a, const void *b);
+void merge(int x[], int y[], int z[], int length);
 int is_sorted(int x[], int length);
 
 int main(int argc, char** argv) {
@@ -51,6 +52,16 @@ int main(int argc, char** argv) {
     printf("\nCalculation took %f seconds.\n",t1-t0);
   }
   MPI_Finalize();
+
+  
+ 
+
+
+
+
+
+
+
   return 0;
 }
 
@@ -65,6 +76,23 @@ int cmpfunc(const void *a, const void *b) {
     const int *y = (const int *)b;
     return *x  - *y;  
   } 
+
+  void merge(int x[], int y[], int z[], int length) {
+    int pos_x = 0;
+    int pos_y = 0;
+    int pos_z;
+    for (pos_z=0;pos_z<(length*2);pos_z++) {
+      if (pos_x == length) {
+        z[pos_z] = y[pos_y++];
+      } else if (pos_y == length) {
+        z[pos_z] = x[pos_x++];
+      } else if (x[pos_x] < y[pos_y]) {
+        z[pos_z] = x[pos_x++];
+      } else {
+        z[pos_z] = y[pos_y++];
+      }
+    }
+  }
 
 int is_sorted(int x[], int length) {
   int i;
