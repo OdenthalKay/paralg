@@ -1,20 +1,23 @@
 # MPI compiler
 MPICC	= mpicc
-# compiler flags for all version
-CFLAGS		= -std=c99 -Wall -O2 -g 
+
+# no optimization for local testing only!
+CFLAGS		= -std=c99 -Wall -O0 -g 
 WR9_CFLAGS	= -std=c99 -Wall -O2 -g 
 # libraries for all versions
 LDLIBS		= -L./libFHBRS -lFHBRS
 WR9_LDLIBS	= -L/usr/local/lib -lFHBRS
 # default problem size
-N 	= 10000000
+N 	= 8
 # default number of processors for test run (N%P == 0!)
-P	= 1
+P	= 2
 
 default:: a2.exe 
 
 run:: a2.exe 
 	mpirun -np $(P) ./a2.exe $(N)
+debug:: a2.exe 
+	mpirun -np $(P) xterm -e gdb ./a2.exe
 
 clean::
 	-rm -f *.exe *.o
