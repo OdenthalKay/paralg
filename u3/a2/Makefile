@@ -10,7 +10,7 @@ WR9_LDLIBS	= -L/usr/local/lib -lFHBRS
 # default problem size
 N 	= 8
 # default number of processors for test run (N%P == 0!)
-P	= 1
+P	= 2
 
 default:: a2.exe 
 
