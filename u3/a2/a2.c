@@ -26,13 +26,11 @@ int main(int argc, char** argv) {
   MPI_Init(NULL, NULL);
   MPI_Comm_size(MPI_COMM_WORLD, &num_processors);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  printf("%d: \n",rank);
   blocksize = n/num_processors;
   block           = malloc(blocksize*sizeof(int));
   block_neighbour = malloc(blocksize*sizeof(int));
   block_merged    = malloc(2*blocksize*sizeof(int));
 
-  
   if (rank == 0) {
     // allocate memory and fill array with values in reverse order
     values = malloc(n*sizeof(int));
@@ -40,28 +38,18 @@ int main(int argc, char** argv) {
       values[i] = n-i;
     }
     memcpy(block,values,blocksize*sizeof(int));
-
-    // split values among all processors
-    int *start = &values[blocksize];
-    for (i=1;i<num_processors;i++) {
-      MPI_Send(start, blocksize, MPI_INT, i, 0, MPI_COMM_WORLD);
-      start += blocksize;
-    }
-  } else {
-    MPI_Recv(block, blocksize, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   }
-
-  // every processor sorts its assigned block 
+  // split values among all processors and sort the individual blocks
+  MPI_Scatter(values, blocksize, MPI_INT, block, blocksize, MPI_INT, 0, MPI_COMM_WORLD);
   qsort(block, blocksize, sizeof(int), cmpfunc);
   assert(is_sorted(block, blocksize));
-
-  ///// OK //////////////////////////
 
   // // merge and split on two neighbouring processors
   for (j=0;j<num_processors-1;j++) {
     if ((rank%2) == (j%2)) {
       MPI_Recv(block_neighbour, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       merge(block, block_neighbour, block_merged, blocksize);
+      assert(is_sorted(block_merged, blocksize));
       memcpy(block, block_merged, blocksize*sizeof(int));
       MPI_Send(block_merged+blocksize, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD);
     } else {
@@ -70,37 +58,20 @@ int main(int argc, char** argv) {
     }
   }
 
-
-  // TODO: aggregate all blocks in values //
+  MPI_Gather(block, blocksize, MPI_INT, values, blocksize, MPI_INT, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    for (i=1;i<num_processors;i++) {
-      MPI_Recv(block, blocksize, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-      memcpy(values, block+i*blocksize, blocksize*sizeof(int));
-      assert(is_sorted(values, n));
-    } 
-  } else {
-   MPI_Send(block, blocksize, MPI_INT, 0, 0, MPI_COMM_WORLD);
- }
- 
+    assert(is_sorted(values, n));
+    t1 = gettime();
+    free(values);
+    printf("\nn: %d, seconds: %.5f\n",n,t1-t0);
+  }
 
-
-
-
- assert(is_sorted(block, blocksize));
- if (rank == 0) {
-  t1 = gettime();
-  printf("\nCalculation took %f seconds.\n",t1-t0);
-}
-
-
-
-
-
-
-
-MPI_Finalize();
-return 0;
+  free(block);
+  free(block_neighbour);
+  free(block_merged);
+  MPI_Finalize();
+  return 0;
 }
 
 ///////////////////////////////////////////////////////////
