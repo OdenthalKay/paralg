@@ -8,14 +8,14 @@ WR9_CFLAGS	= -std=c99 -Wall -O2 -g
 LDLIBS		= -L./libFHBRS -lFHBRS
 WR9_LDLIBS	= -L/usr/local/lib -lFHBRS
 # default problem size
-N 	= 8
+N 	= 64
 # default number of processors for test run (N%P == 0!)
-P	= 2
+P	= 16
 
 default:: a2.exe 
 
 run:: a2.exe 
-	mpirun -np $(P) ./a2.exe $(N)
+	mpirun --mca orte_base_help_aggregate 0 -np $(P) ./a2.exe $(N)
 debug:: a2.exe 
 	mpirun -np $(P) xterm -e gdb ./a2.exe
 

@@ -12,7 +12,7 @@ cd $PBS_O_WORKDIR
 module load openmpi/gnu
 
 # matrix dimension
-export N=10
+export N=8
 
 # following the actions to be performed by the job
 # start here your MPI program on the nodes we got assigned from the batch system

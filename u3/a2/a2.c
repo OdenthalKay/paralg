@@ -5,6 +5,8 @@
 #include <assert.h>
 #include "libFHBRS/libFHBRS.h"
 
+#define ROOT 0
+
 int cmpfunc(const void *a, const void *b);
 void merge(int x[], int y[], int z[], int length);
 int is_sorted(int x[], int length);
@@ -31,7 +33,7 @@ int main(int argc, char** argv) {
   block_neighbour = malloc(blocksize*sizeof(int));
   block_merged    = malloc(2*blocksize*sizeof(int));
 
-  if (rank == 0) {
+  if (rank == ROOT) {
     // allocate memory and fill array with values in reverse order
     values = malloc(n*sizeof(int));
     for (i=0;i<n;i++) {
@@ -40,27 +42,34 @@ int main(int argc, char** argv) {
     memcpy(block,values,blocksize*sizeof(int));
   }
   // split values among all processors and sort the individual blocks
-  MPI_Scatter(values, blocksize, MPI_INT, block, blocksize, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Scatter(values, blocksize, MPI_INT, block, blocksize, MPI_INT, ROOT, MPI_COMM_WORLD);
   qsort(block, blocksize, sizeof(int), cmpfunc);
   assert(is_sorted(block, blocksize));
 
-  // // merge and split on two neighbouring processors
-  for (j=0;j<num_processors-1;j++) {
+  // merge and split on two neighbouring processors
+  MPI_Barrier(MPI_COMM_WORLD);
+  for (j=0;j<num_processors;j++) {
     if ((rank%2) == (j%2)) {
-      MPI_Recv(block_neighbour, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-      merge(block, block_neighbour, block_merged, blocksize);
-      assert(is_sorted(block_merged, blocksize));
-      memcpy(block, block_merged, blocksize*sizeof(int));
-      MPI_Send(block_merged+blocksize, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD);
+      if (rank < num_processors-1) {
+        // last processor never receives
+        MPI_Recv(block_neighbour, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        merge(block, block_neighbour, block_merged, blocksize);
+        assert(is_sorted(block_merged, blocksize));
+        memcpy(block, block_merged, blocksize*sizeof(int));
+        MPI_Send(block_merged+blocksize, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD);
+      }
     } else {
-      MPI_Send(block, blocksize, MPI_INT, rank-1, 0, MPI_COMM_WORLD);
-      MPI_Recv(block, blocksize, MPI_INT, rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      // first processor never sends
+      if (rank > 0) {
+        MPI_Send(block, blocksize, MPI_INT, rank-1, 0, MPI_COMM_WORLD);
+        MPI_Recv(block, blocksize, MPI_INT, rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      }
     }
   }
 
-  MPI_Gather(block, blocksize, MPI_INT, values, blocksize, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gather(block, blocksize, MPI_INT, values, blocksize, MPI_INT, ROOT, MPI_COMM_WORLD);
 
-  if (rank == 0) {
+  if (rank == ROOT) {
     assert(is_sorted(values, n));
     t1 = gettime();
     free(values);
