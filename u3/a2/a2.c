@@ -24,7 +24,6 @@ int main(int argc, char** argv) {
   int *block_merged;
   double t0, t1;
   ////////////////////////////////////////////////////////
-  t0 = gettime();
   MPI_Init(NULL, NULL);
   MPI_Comm_size(MPI_COMM_WORLD, &num_processors);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -35,6 +34,7 @@ int main(int argc, char** argv) {
 
   if (rank == ROOT) {
     // allocate memory and fill array with values in reverse order
+    t0 = gettime();
     values = malloc(n*sizeof(int));
     for (i=0;i<n;i++) {
       values[i] = n-i;
@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
   // split values among all processors and sort the individual blocks
   MPI_Scatter(values, blocksize, MPI_INT, block, blocksize, MPI_INT, ROOT, MPI_COMM_WORLD);
   qsort(block, blocksize, sizeof(int), cmpfunc);
-  assert(is_sorted(block, blocksize));
+  //assert(is_sorted(block, blocksize));
 
   // merge and split on two neighbouring processors
   MPI_Barrier(MPI_COMM_WORLD);
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
         // last processor never receives
         MPI_Recv(block_neighbour, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         merge(block, block_neighbour, block_merged, blocksize);
-        assert(is_sorted(block_merged, blocksize));
+        //assert(is_sorted(block_merged, blocksize));
         memcpy(block, block_merged, blocksize*sizeof(int));
         MPI_Send(block_merged+blocksize, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD);
       }
@@ -70,10 +70,10 @@ int main(int argc, char** argv) {
   MPI_Gather(block, blocksize, MPI_INT, values, blocksize, MPI_INT, ROOT, MPI_COMM_WORLD);
 
   if (rank == ROOT) {
-    assert(is_sorted(values, n));
     t1 = gettime();
+    assert(is_sorted(values, n));
     free(values);
-    printf("\nn: %d, seconds: %.5f\n",n,t1-t0);
+    printf("n: %d, seconds: %.5f\n",n,t1-t0);
   }
 
   free(block);
