@@ -44,17 +44,15 @@ int main(int argc, char** argv) {
   // split values among all processors and sort the individual blocks
   MPI_Scatter(values, blocksize, MPI_INT, block, blocksize, MPI_INT, ROOT, MPI_COMM_WORLD);
   qsort(block, blocksize, sizeof(int), cmpfunc);
-  //assert(is_sorted(block, blocksize));
 
   // merge and split on two neighbouring processors
   MPI_Barrier(MPI_COMM_WORLD);
   for (j=0;j<num_processors;j++) {
     if ((rank%2) == (j%2)) {
+      // last processor never receives
       if (rank < num_processors-1) {
-        // last processor never receives
         MPI_Recv(block_neighbour, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         merge(block, block_neighbour, block_merged, blocksize);
-        //assert(is_sorted(block_merged, blocksize));
         memcpy(block, block_merged, blocksize*sizeof(int));
         MPI_Send(block_merged+blocksize, blocksize, MPI_INT, rank+1, 0, MPI_COMM_WORLD);
       }
@@ -73,7 +71,7 @@ int main(int argc, char** argv) {
     t1 = gettime();
     assert(is_sorted(values, n));
     free(values);
-    printf("n: %d, seconds: %.5f\n",n,t1-t0);
+    printf("%.5f\n",t1-t0);
   }
 
   free(block);
