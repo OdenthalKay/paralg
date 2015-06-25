@@ -1,12 +1,11 @@
-CC = gcc
-OMP = -fopenmp
+CC = gcc -fopenmp
 ###########################################################
 # debug
-DEBUG_CFLAGS= $(OMP) -g -O0 -Wall
-DEBUG_INCLUDES=
+DEBUG_CFLAGS= -g -O0 -Wall
+DEBUG_INCLUDES=-I.
 DEBUG_LIBS=
 # wr5
-CFLAGS= $(OMP) -O3
+CFLAGS= -O3
 INCLUDES=
 LIBS=
 

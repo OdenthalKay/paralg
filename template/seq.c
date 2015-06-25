@@ -1,20 +1,20 @@
 #include "dgb.h"
 #include <stdlib.h>
 #include <stdio.h>
-
-
-int multiply(int x, int y)
-{
-	check(x > 0 && y > 0, "arguments must not be negative!");
-	return x * y;
-}
-
+#include <omp.h>
 
 int main(int argc, char *argv[])
 {
+	int num_threads = 2;
 
-	check(24 == 5, "should be 25");
-	printf("hallo\n");
+	omp_set_num_threads(num_threads);
+	#pragma omp parallel
+	{
+		check(omp_get_num_threads() == num_threads, "is the -fopenmp flag set?");
+		int rank = omp_get_thread_num();
+		printf("I am thread %d\n", rank);
+	}
+
 	return 0;
 }
 
