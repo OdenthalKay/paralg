@@ -4,6 +4,7 @@
 #PBS -l walltime=00:10:00
 #PBS -l vmem=16GB
 #PBS -V 
+www.google.de
 
 module load intel-icc/default
 
