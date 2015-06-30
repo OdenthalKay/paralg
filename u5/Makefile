@@ -1,4 +1,6 @@
-CC = gcc -fopenmp
+
+CC     = gcc
+CC_OMP = gcc -fopenmp
 ###########################################################
 # debug
 DEBUG_CFLAGS= -g -O0 -Wall -std=c99
@@ -10,9 +12,9 @@ INCLUDES=
 LIBS=
 
 # execute locally or just build for execution on wr5
-default: clean debug
-all_debug: midpoint_debug trapezoid_debug simpson_debug montecarlo_debug
-debug: midpoint_debug
+default: debug
+all_debug: midpoint_par_debug
+debug: midpoint_par_debug
 	./bin/$<
 wr5: seq par
 
@@ -22,11 +24,11 @@ wr5: seq par
 	mv $@ ./bin
 %_debug.o: %.c
 	$(CC) -c $(DEBUG_CFLAGS) $(DEBUG_INCLUDES) $^ -o $@
-par_debug: par.o
-	$(CC) $^ $(DEBUG_LIBS) -o $@
+%_par_debug: %_par_debug.o
+	$(CC_OMP) $^ $(DEBUG_LIBS) -o $@
 	mv $@ ./bin
-par_debug.o: par_debug.c
-	$(CC) -c $(DEBUG_CFLAGS) $(DEBUG_INCLUDES) $^ -o $@
+%_par_debug.o: %.c
+	$(CC_OMP) -c $(DEBUG_CFLAGS) $(DEBUG_INCLUDES) $^ -o $@
 
 # wr5
 seq: seq.o
@@ -35,16 +37,16 @@ seq: seq.o
 seq.o: seq.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $^ -o $@
 par: par.o
-	$(CC) $^ $(LIBS) -o $@
+	$(CC_OMP) $^ $(LIBS) -o $@
 	mv $@ ./wr5
 par.o: par.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) $^ -o $@
+	$(CC_OMP) -c $(CFLAGS) $(INCLUDES) $^ -o $@
 
 # cleanup
 # .PHONY: make clean a valid target so that it can be used as a prequisite
 # -: ignore non-zero code => clean cannot fail
 # @: ignore rm messages
-.PHONY: clean
+
 clean:
 	-@rm -rf *.o ./bin/* ./wr5/*
 
