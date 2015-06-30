@@ -11,15 +11,16 @@ LIBS=
 
 # execute locally or just build for execution on wr5
 default: clean debug
-debug: seq_debug
+all_debug: midpoint_debug trapezoid_debug simpson_debug montecarlo_debug
+debug: midpoint_debug
 	./bin/$<
 wr5: seq par
 
 # debug
-seq_debug: seq_debug.o
+%_debug: %_debug.o
 	$(CC) $^ $(DEBUG_LIBS) -o $@
 	mv $@ ./bin
-seq_debug.o: seq.c
+%_debug.o: %.c
 	$(CC) -c $(DEBUG_CFLAGS) $(DEBUG_INCLUDES) $^ -o $@
 par_debug: par.o
 	$(CC) $^ $(DEBUG_LIBS) -o $@
