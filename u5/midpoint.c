@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define PI 3.14159265
+static double f(double x) { return sin(x); }
 
 double midpoint(int a, int b, int n) {
 	double h = (double)(b - a) / n;
@@ -14,8 +14,9 @@ double midpoint(int a, int b, int n) {
 	for (int i = 0; i <= (n / 2); i++) {
 		int index = i * 2;
 		double x = a + index * h;
-		approx += sin(x);
+		approx += f(x);
 	}
+
 	return 2*h*approx;
 }
 
