@@ -1,20 +1,23 @@
 
 /*
-* TRAPEZOID
+* MONTECARLO
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 static double f(double x) { return sin(x); }
 
-double simpson(double a, double b, int n) {
-	double h = (b - a) / n;
-	double approx;
+double montecarlo(int a, int b, int n) {
+	double approx = 0;	
 
-	
-
-	return approx;
+	srand(time(NULL));
+	for (int i = 0; i < n; i++) {
+		double r = rand() % b;
+		approx += f(r);
+	}
+	return (approx/n)*(b-a);
 }
 
 int main(int argc, char const *argv[])
@@ -24,10 +27,10 @@ int main(int argc, char const *argv[])
 	int b = 1000;
 	int n = 10000;
 
-	printf("--- trapezoid: sequential integral ---\n");
-	approx = simpson(a, b, n);
+	printf("--- montecarlo: sequential integral ---\n");
+	approx = montecarlo(a, b, n);
 	exact  = (-cos(b)) - (-cos(a));
-	printf("trapezoid approx: %.5f\n", approx);
+	printf("montecarlo approx: %.5f\n", approx);
 	printf("exact: %.5f\n",  exact);
 	return 0;
 }
