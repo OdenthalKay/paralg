@@ -7,16 +7,16 @@ DEBUG_CFLAGS= -g -O0 -Wall -std=c99
 DEBUG_INCLUDES=-I.
 DEBUG_LIBS= -lm
 # wr5
-CFLAGS= -O3
-INCLUDES=
+CFLAGS= -O3 -Wall -std=c99
+INCLUDES= 
 LIBS=
 
 # execute locally or just build for execution on wr5
 default: debug
-all_debug: midpoint_par_debug
-debug: midpoint_par_debug
+all_debug: midpoint_par_debug trapezoid_par_debug simpson_par_debug montecarlo_par_debug
+debug: montecarlo_par_debug
 	./bin/$<
-wr5: seq par
+all_wr5: midpoint_seq trapezoid_seq simpson_seq montecarlo_seq
 
 # debug
 %_debug: %_debug.o
@@ -31,10 +31,10 @@ wr5: seq par
 	$(CC_OMP) -c $(DEBUG_CFLAGS) $(DEBUG_INCLUDES) $^ -o $@
 
 # wr5
-seq: seq.o
+%_seq: %_seq.o
 	$(CC) $^ $(LIBS) -o $@
 	mv $@ ./wr5
-seq.o: seq.c
+%_seq.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $^ -o $@
 par: par.o
 	$(CC_OMP) $^ $(LIBS) -o $@

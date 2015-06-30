@@ -16,6 +16,7 @@ double trapezoid(double a, double b, int n) {
 	approx = (f(a) + f(b)) / 2.0;
 
 	/* all other values */
+	#pragma omp parallel for reduction(+:approx)
 	for (int i = 1; i < n; i++) {
 		double x = a + i * h;
 		approx += f(x);

@@ -13,6 +13,7 @@ double montecarlo(int a, int b, int n) {
 	double approx = 0;	
 
 	srand(time(NULL));
+	#pragma omp parallel for reduction(+:approx)
 	for (int i = 0; i < n; i++) {
 		double r = rand() % b;
 		approx += f(r);
