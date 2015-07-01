@@ -1,22 +1,22 @@
 
-CC     = gcc
-CC_OMP = gcc -fopenmp
+CC     = icc
+CC_OMP = icc -openmp
 ###########################################################
 # debug
 DEBUG_CFLAGS= -g -O0 -Wall -std=c99
-DEBUG_INCLUDES=-I.
-DEBUG_LIBS= -lm
+DEBUG_INCLUDES=
+DEBUG_LIBS= -lm -lFHBRS
 # wr5
-CFLAGS= -O3 -Wall -std=c99
+CFLAGS= -std=c99 -Wall -O2 -g
 INCLUDES= 
-LIBS=
+LIBS= -L/usr/local/lib -lFHBRS
 
 # execute locally or just build for execution on wr5
 default: debug
 all_debug: midpoint_par_debug trapezoid_par_debug simpson_par_debug montecarlo_par_debug
 debug: montecarlo_par_debug
-	./bin/$<
-all_wr5: midpoint_seq trapezoid_seq simpson_seq montecarlo_seq
+	./bin/$< 100
+all_wr5: midpoint_par 
 
 # debug
 %_debug: %_debug.o
@@ -36,10 +36,10 @@ all_wr5: midpoint_seq trapezoid_seq simpson_seq montecarlo_seq
 	mv $@ ./wr5
 %_seq.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $^ -o $@
-par: par.o
+%_par: %_par.o
 	$(CC_OMP) $^ $(LIBS) -o $@
 	mv $@ ./wr5
-par.o: par.c
+%_par.o: %.c
 	$(CC_OMP) -c $(CFLAGS) $(INCLUDES) $^ -o $@
 
 # cleanup

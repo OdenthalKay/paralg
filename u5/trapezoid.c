@@ -4,7 +4,10 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <math.h>
+#include <libFHBRS.h>
+
 
 static double f(double x) { return sin(x); }
 
@@ -27,15 +30,18 @@ double trapezoid(double a, double b, int n) {
 
 int main(int argc, char const *argv[])
 {
-	double approx, exact;
+	assert(argc == 2);
+	double approx, exact, t1, t2;
+	int n = atoi(argv[1]);
 	int a = 0;
 	int b = 1000;
-	int n = 10000;
 
-	printf("--- trapezoid: sequential integral ---\n");
+	t1 = gettime();
 	approx = trapezoid(a, b, n);
+	t2 = gettime();
+	printf("calculation took %.5f seconds\n", t2 - t1);
 	exact  = (-cos(b)) - (-cos(a));
-	printf("trapezoid approx: %.5f\n", approx);
+	printf("approx: %.5f\n", approx);
 	printf("exact: %.5f\n",  exact);
 	return 0;
 }
