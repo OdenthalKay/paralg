@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <math.h>
 #include <libFHBRS.h>
+#include <omp.h>
 
 static double f(double x) { return sin(x); }
 
@@ -43,19 +44,20 @@ double simpson(double a, double b, int n) {
 
 int main(int argc, char const *argv[])
 {
-	assert(argc == 2);
-	double approx, exact, t1, t2;
+	assert(argc == 3);
+	double approx, exact, relative_error, t1, t2;
 	int n = atoi(argv[1]);
+	int p = atoi(argv[2]);
 	int a = 0;
 	int b = 1000;
 
+	omp_set_num_threads(p);
 	t1 = gettime();
 	approx = simpson(a, b, n);
 	t2 = gettime();
-	printf("calculation took %.5f seconds\n", t2 - t1);
 	exact  = (-cos(b)) - (-cos(a));
-	printf("approx: %.5f\n", approx);
-	printf("exact: %.5f\n",  exact);
+	relative_error = (approx - exact)/exact;
+	printf("%.5f %.5f %.5f\n", t2 - t1, approx, relative_error);
 	return 0;
 }
 

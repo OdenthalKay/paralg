@@ -1,6 +1,6 @@
 
-CC     = icc
-CC_OMP = icc -openmp
+CC     = gcc
+CC_OMP = gcc -fopenmp
 ###########################################################
 # debug
 DEBUG_CFLAGS= -g -O0 -Wall -std=c99
@@ -14,8 +14,8 @@ LIBS= -L/usr/local/lib -lFHBRS
 # execute locally or just build for execution on wr5
 default: debug
 all_debug: midpoint_par_debug trapezoid_par_debug simpson_par_debug montecarlo_par_debug
-debug: montecarlo_par_debug
-	./bin/$< 100
+debug: midpoint_par_debug
+	./bin/$< 100000 4
 all_wr5: midpoint_par 
 
 # debug
