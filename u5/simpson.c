@@ -27,7 +27,6 @@ double simpson(double a, double b, int n) {
 			double x = a + index * h;
 			s1 += f(x);
 		}
-		printf("%f\n", s1);
 
 		/* even indices */
 		#pragma omp for reduction(+:s2)
@@ -51,12 +50,15 @@ int main(int argc, char const *argv[])
 	int a = 0;
 	int b = 1000;
 
+	#ifdef USE_OMP
 	omp_set_num_threads(p);
+	#endif
+	
 	t1 = gettime();
 	approx = simpson(a, b, n);
 	t2 = gettime();
 	exact  = (-cos(b)) - (-cos(a));
-	relative_error = (approx - exact)/exact;
+	relative_error = fabs((approx - exact)/exact);
 	printf("%.5f %.5f %.5f\n", t2 - t1, approx, relative_error);
 	return 0;
 }

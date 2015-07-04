@@ -5,29 +5,37 @@
 #PBS -l vmem=16GB
 #PBS -V 
 
-module load intel-icc/default
+#module load intel-icc/default
 
 # change to submit directory (with executable)
-cd $PBS_O_WORKDIR
+#cd $PBS_O_WORKDIR
 
 #sequential versions
 echo "--- SEQUENTIAL VERSIONS ---"
-for EXP in 0 1 2 3 4 5 6 ; do
+echo "--- MIDPOINT ---"
+for EXP in 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
-	./wr5/midpoint_seq $N
+	./wr5/midpoint_seq $N 1
 done
-for EXP in 0 1 2 3 4 5 6 ; do
+echo "--- MIDPOINT ---"
+echo "--- TRAPEZOID ---"
+for EXP in 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
-	./wr5/trapezoid_seq $N
+	./wr5/trapezoid_seq $N 1
 done
-for EXP in 0 1 2 3 4 5 6 ; do
+echo "--- TRAPEZOID ---"
+echo "--- SIMPSON ---"
+for EXP in 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
-	./wr5/simpson_seq $N
+	./wr5/simpson_seq $N 1
 done
-for EXP in 0 1 2 3 4 5 6 ; do
+echo "--- SIMPSON ---"
+echo "--- MONTECARLO ---"
+for EXP in 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
-	./wr5/montecarlo_seq $N
+	./wr5/montecarlo_seq $N 1
 done
+echo "--- MONTECARLO ---"
 
 # parallel versions
 echo "--- PARALLEL VERSIONS ---"

@@ -8,6 +8,7 @@
 #include <libFHBRS.h>
 #include <omp.h>
 
+
 static double f(double x) { return sin(x); }
 
 double midpoint(int a, int b, int n) {
@@ -21,7 +22,7 @@ double midpoint(int a, int b, int n) {
 		approx += f(x);
 	}
 
-	return 2*h*approx;
+	return 2 * h * approx;
 }
 
 int main(int argc, char const *argv[])
@@ -33,12 +34,15 @@ int main(int argc, char const *argv[])
 	int a = 0;
 	int b = 1000;
 
+	#ifdef USE_OMP
 	omp_set_num_threads(p);
+	#endif
+	
 	t1 = gettime();
 	approx = midpoint(a, b, n);
 	t2 = gettime();
 	exact  = (-cos(b)) - (-cos(a));
-	relative_error = (approx - exact)/exact;
+	relative_error = fabs((approx - exact)/exact);
 	printf("%.5f %.5f %.5f\n", t2 - t1, approx, relative_error);
 	return 0;
 }
