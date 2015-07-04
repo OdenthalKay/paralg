@@ -13,25 +13,25 @@
 #sequential versions
 echo "--- SEQUENTIAL VERSIONS ---"
 echo "--- MIDPOINT ---"
-for EXP in 1 2 3 4 5 6 7 8 9 ; do
+for EXP in 0 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
 	./wr5/midpoint_seq $N 1
 done
 echo "--- MIDPOINT ---"
 echo "--- TRAPEZOID ---"
-for EXP in 1 2 3 4 5 6 7 8 9 ; do
+for EXP in 0 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
 	./wr5/trapezoid_seq $N 1
 done
 echo "--- TRAPEZOID ---"
 echo "--- SIMPSON ---"
-for EXP in 1 2 3 4 5 6 7 8 9 ; do
+for EXP in 0 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
 	./wr5/simpson_seq $N 1
 done
 echo "--- SIMPSON ---"
 echo "--- MONTECARLO ---"
-for EXP in 1 2 3 4 5 6 7 8 9 ; do
+for EXP in 0 1 2 3 4 5 6 7 8 9 ; do
 	N=$(echo 10^$EXP | bc)
 	./wr5/montecarlo_seq $N 1
 done
